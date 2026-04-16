@@ -2,6 +2,7 @@
 
 
 growpart /dev/nvme0n1 4
+pvresize /dev/nvme0n1p4
 lvextend -r -L +30G /dev/mapper/RootVG-homeVol
 xfs_growfs /home
 
@@ -23,8 +24,6 @@ terraform apply -auto-approve
 
 # creating components
 cd /home/ec2-user
-git clone https://github.com/rajamohanreddy-v/roboshop-infra-dev.git
-chown ec2-user:ec2-user -R roboshop-infra-dev
 cd roboshop-infra-dev/90-components
 terraform init
 terraform apply -auto-approve
