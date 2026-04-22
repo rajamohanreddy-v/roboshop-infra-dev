@@ -52,7 +52,7 @@ resource "aws_lb_target_group" "frontend" {
   name     = "${var.project}-${var.environment}-frontend"
   port     = 80
   protocol = "HTTP"
-  vpc_id  = local.vpc_id
+  vpc_id   = data.aws_ssm_parameter.vpc_id
   deregistration_delay = 60
 
   health_check {
@@ -66,9 +66,9 @@ resource "aws_lb_target_group" "frontend" {
     unhealthy_threshold = 3
   }
 }
-
 resource "aws_lb_listener_rule" "frontend" {
-  listener_arn = local.frontend_alb_certificate_arn
+  # This is the resource name of the listener defined earlier in the same file
+  listener_arn = aws_lb_listener.https.arn 
   priority     = 10
 
   action {
@@ -78,6 +78,7 @@ resource "aws_lb_listener_rule" "frontend" {
 
   condition {
     host_header {
+      # Make sure this matches the URL in your browser exactly
       values = ["${var.project}-${var.environment}.${var.domain_name}"]
     }
   }
